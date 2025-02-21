@@ -16,12 +16,20 @@ public class JavaBot {
         String summarizedTitle = summarizeText(llmResult);
         System.out.println("Summarized Title = " + summarizedTitle);
 
+        // LLM을 사용해 이미지 생성
+        String image_url = useLLM2("일본 만화 풍의 개발 회사 내부 모습들을 그려줘")
+        System.out.println("image url = " + image_url);
+
         // GitHub Issue 생성
-        sendIssues(summarizedTitle, llmResult);
+        sendIssues(summarizedTitle, llmResult, image_url);
     }
 
     public static String useLLM(String prompt) {
         return callLLMApi(prompt);
+    }
+
+    public static String useLLM2() {
+        return callLLMApi2();
     }
 
     public static String summarizeText(String text) {
@@ -71,6 +79,49 @@ public class JavaBot {
         }
     }
 
+    public static String callLLMApi2(String prompt) {
+        String prompt = System.getenv("LLM2_PROMPT");
+        String apiUrl = System.getenv("LLM2_API_URL");
+        String apiKey = System.getenv("LLM2_API_KEY");
+        String model = System.getenv("LLM2_MODEL");
+
+        String payload = """
+                {
+                "prompt": "%s",
+                "model": "%s",
+                "width": 640,
+                "height": 640,
+                "steps": 4,
+                "n": 1
+                
+                }
+                """.formatted(prompt, model);
+
+        HttpClient client = HttpClient.newHttpClient();
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(apiUrl))
+                .header("Content-Type", "application/json")
+                .header("Authorization", "Bearer " + apiKey)
+                .POST(HttpRequest.BodyPublishers.ofString(payload, StandardCharsets.UTF_8))
+                .build();
+
+        try {
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+            System.out.println("response.statusCode() = " + response.statusCode());
+            System.out.println("response.body() = " + response.body());
+
+            if (response.statusCode() == 200) {
+                return  extractImageUrl(response.body());
+            } else {
+                return "LLM API 오류: " + response.statusCode();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "예외 발생: " + e.getMessage();
+        }
+    }
+
     public static String extractContent(String json) {
         // 정규식: `"content":"여기에 내용"`
         Pattern pattern = Pattern.compile("\"content\":\"([^\"]+)\"");
@@ -82,8 +133,18 @@ public class JavaBot {
         return "응답에서 content 값을 찾을 수 없음";
     }
 
+    public static String extractImageUrl(String json) {
+        // 정규식 패턴: "url": "이미지 URL"
+        Pattern pattern = Pattern.compile("\"url\"\\s*:\\s*\"(https?://[^\"]+)\"");
+        Matcher matcher = pattern.matcher(json);
+
+        if (matcher.find()) {
+            return matcher.group(1); // 첫 번째 URL 반환
+        }
+        return "응답에서 이미지 URL을 찾을 수 없음";
+    }
     
-    public static void sendIssues(String title, String body) {
+    public static void sendIssues(String title, String body, String imageUrl) {
         String repo = System.getenv("GITHUB_REPO");
         String token = System.getenv("GITHUB_TOKEN");
         String apiUrl = "https://api.github.com/repos/" + repo + "/issues";
@@ -93,12 +154,20 @@ public class JavaBot {
             return;
         }
 
+    // 이미지 URL을 본문에 Markdown 형식으로 추가
+        String fullBody = """
+                %s
+                
+                ---
+                ![Generated Image](%s)
+                """.formatted(body, imageUrl);
+
         String payload = """
                 {
-                  "title": "%s",
-                  "body": "%s"
+                "title": "%s",
+                "body": "%s"
                 }
-                """.formatted(title, body);
+                """.formatted(title, fullBody);
 
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder()

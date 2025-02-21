@@ -28,3 +28,7 @@ jobs:
           LLM_API_URL: ${{ vars.LLM_API_URL }}
           LLM_API_KEY: ${{ secrets.LLM_API_KEY }}
           LLM_MODEL: ${{ vars.LLM_MODEL }}
+          LLM2_API_URL: ${{ vars.LLM2_API_URL }}
+          LLM2_API_KEY: ${{ secrets.LLM2_API_KEY }}
+          LLM2_MODEL: ${{ vars.LLM2_MODEL }}
+
