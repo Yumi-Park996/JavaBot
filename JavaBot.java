@@ -153,21 +153,20 @@ public class JavaBot {
             return;
         }
 
-        // Markdown 형식으로 이미지 URL을 본문에 추가
-        String fullBody = """
-                %s
-                
-                ---
-                ![Generated Image](%s)
-                """.formatted(body.replace("\"", "\\\""), imageUrl);
+        // 🛠 JSON 이스케이프 처리 (큰따옴표 및 개행 문자 변환)
+        String safeTitle = title.replace("\"", "\\\"").replace("\n", "\\n");
+        String safeBody = body.replace("\"", "\\\"").replace("\n", "\\n");
 
-        // JSON 문자열 생성 (Escape 처리)
+        // Markdown 형식으로 이미지 추가
+        String fullBody = safeBody + "\n\n---\n![Generated Image](" + imageUrl + ")";
+
+        // 🛠 최종 JSON 페이로드 생성
         String payload = """
                 {
                 "title": "%s",
                 "body": "%s"
                 }
-                """.formatted(title.replace("\"", "\\\""), fullBody);
+                """.formatted(safeTitle, fullBody);
 
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder()
