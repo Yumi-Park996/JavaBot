@@ -80,7 +80,6 @@ public class JavaBot {
     }
 
     public static String callLLMApi2(String prompt) {
-        String prompt = System.getenv("LLM2_PROMPT");
         String apiUrl = System.getenv("LLM2_API_URL");
         String apiKey = System.getenv("LLM2_API_KEY");
         String model = System.getenv("LLM2_MODEL");
