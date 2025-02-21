@@ -17,7 +17,7 @@ public class JavaBot {
         System.out.println("Summarized Title = " + summarizedTitle);
 
         // LLM을 사용해 이미지 생성
-        String image_url = useLLM2("일본 만화 풍의 개발 회사 내부 모습들을 그려줘");
+        String image_url = useLLM2("A modern software development company's interior in Japanese manga style. The open office layout features a spacious and organized workspace where multiple developers are actively coding at their desks. Some are discussing ideas while looking at their monitors, while others are brainstorming on a whiteboard. The walls are adorned with various tech-related posters and whiteboards, and desks are cluttered with laptops, dual monitors, coffee cups, snacks, and figurines. The lighting is warm and inviting, creating a comfortable atmosphere. A cityscape can be seen through the windows. The characters are drawn in a vibrant Japanese anime style, exuding energy and liveliness.");
         System.out.println("image url = " + image_url);
 
         // GitHub Issue 생성
