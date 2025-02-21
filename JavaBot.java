@@ -28,8 +28,8 @@ public class JavaBot {
         return callLLMApi(prompt);
     }
 
-    public static String useLLM2() {
-        return callLLMApi2();
+    public static String useLLM2(String prompt) {
+        return callLLMApi2(prompt);
     }
 
     public static String summarizeText(String text) {
