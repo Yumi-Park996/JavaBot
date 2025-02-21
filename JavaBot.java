@@ -1,3 +1,11 @@
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.nio.charset.StandardCharsets;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public class JavaBot {
     public static void main(String[] args) {
         // LLM을 사용해 알고리즘 추천 받기
@@ -64,14 +72,16 @@ public class JavaBot {
     }
 
     public static String extractContent(String json) {
+        // 정규식: `"content":"여기에 내용"`
         Pattern pattern = Pattern.compile("\"content\":\"([^\"]+)\"");
         Matcher matcher = pattern.matcher(json);
 
         if (matcher.find()) {
-            return matcher.group(1);
+            return matcher.group(1); // 첫 번째 그룹(내용) 반환
         }
         return "응답에서 content 값을 찾을 수 없음";
     }
+
     
     public static void sendIssues(String title, String body) {
         String repo = System.getenv("GITHUB_REPO");
