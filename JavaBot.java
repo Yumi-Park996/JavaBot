@@ -9,6 +9,7 @@ public class Main {
         // LLM을 사용하여 알고리즘 추천
         String llmResult = useLLM("자바 알고리즘 중 개발자 현업에서 많이 사용되는 알고리즘을 랜덤으로 하나를 추천하고 설명해주는 내용을 500자 이내로 작성. 별도의 앞뒤 내용 없이 해당 내용만 출력. nutshell, for slack message, in korean.");
         System.out.println("llmResult = " + llmResult);
+        sendIssues("Java Algorithm", llmResult);
     }
 
     public static String useLLM(String prompt) {
