@@ -1,0 +1,30 @@
+name: JavaBot
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 */3 * * *'  # ⏰ 3시간마다 실행 (예: 00:00, 03:00, 06:00 ...)
+    
+jobs:
+  create-issue:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Compile and Run Bot
+        run: |
+          javac JavaBot.java
+          java JavaBot
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPO: ${{ vars.GITHUB_REPO }}
+          LLM_API_URL: ${{ vars.LLM_API_URL }}
+          LLM_API_KEY: ${{ secrets.LLM_API_KEY }}
+          LLM_MODEL: ${{ vars.LLM_MODEL }}
