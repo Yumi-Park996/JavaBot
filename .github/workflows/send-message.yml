@@ -3,7 +3,7 @@ name: JavaBot
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 */3 * * *'  # ⏰ 3시간마다 실행 (예: 00:00, 03:00, 06:00 ...)
+    - cron: '0 * * * *'  # ⏰ 1시간마다 실행 (예: 00:00, 03:00, 06:00 ...)
     
 jobs:
   create-issue:
