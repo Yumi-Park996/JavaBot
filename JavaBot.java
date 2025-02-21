@@ -158,15 +158,13 @@ public class JavaBot {
         String safeBody = body.replace("\"", "\\\"").replace("\n", "\\n");
 
         // Markdown 형식으로 이미지 추가
-        String fullBody = safeBody + "\n\n---\n![Generated Image](" + imageUrl + ")";
+        String fullBody = safeBody + "\\n\\n---\\n![Generated Image](" + imageUrl + ")";
 
-        // 🛠 최종 JSON 페이로드 생성
-        String payload = """
-                {
-                "title": "%s",
-                "body": "%s"
-                }
-                """.formatted(safeTitle, fullBody);
+        // 🛠 JSON 페이로드 생성 (문법 오류 수정)
+        String payload = "{"
+                + "\"title\": \"" + safeTitle + "\","
+                + "\"body\": \"" + fullBody + "\""
+                + "}";
 
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder()
