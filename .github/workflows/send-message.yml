@@ -23,8 +23,8 @@ jobs:
           javac JavaBot.java
           java JavaBot
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GITHUB_REPO: ${{ vars.GITHUB_REPO }}
+          GITHUB_TOKEN: ${{ secrets.GIT_TOKEN }}
+          GITHUB_REPO: ${{ vars.GIT_REPO }}
           LLM_API_URL: ${{ vars.LLM_API_URL }}
           LLM_API_KEY: ${{ secrets.LLM_API_KEY }}
           LLM_MODEL: ${{ vars.LLM_MODEL }}
