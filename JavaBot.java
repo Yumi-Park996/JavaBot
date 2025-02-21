@@ -3,11 +3,13 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
+import java.util.regex.*;
 
 public class JavaBot {
     public static void main(String[] args) {
         String llmResult = useLLM("자바 알고리즘 중 개발자 현업에서 많이 사용되는 알고리즘을 랜덤으로 하나를 추천하고 설명해주는 내용을 500자 이내로 작성. 별도의 앞뒤 내용 없이 해당 내용만 출력. nutshell, for slack message, in korean.");
         System.out.println("llmResult = " + llmResult);
+        return sendIssues("Java", llmResult);
     }
 
     public static String useLLM(String prompt) {
@@ -53,20 +55,14 @@ public class JavaBot {
     }
 
     public static String extractContent(String json) {
-        // `"content":"` 다음에 나오는 문자열을 추출
-        int startIndex = json.indexOf("\"content\":\"");
-        if (startIndex == -1) {
-            return "응답에서 content 값을 찾을 수 없음";
+        // 정규식: `"content":"여기에 내용"`
+        Pattern pattern = Pattern.compile("\"content\":\"([^\"]+)\"");
+        Matcher matcher = pattern.matcher(json);
+
+        if (matcher.find()) {
+            return matcher.group(1); // 첫 번째 그룹(내용) 반환
         }
-
-        startIndex += 10; // `"content":"` 길이만큼 이동
-        int endIndex = json.indexOf("\"", startIndex); // 닫는 따옴표 찾기
-
-        if (endIndex == -1) {
-            return "JSON 형식 오류";
-        }
-
-        return json.substring(startIndex, endIndex);
+        return "응답에서 content 값을 찾을 수 없음";
     }
     
     public static void sendIssues(String title, String body) {
