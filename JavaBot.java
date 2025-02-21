@@ -17,7 +17,7 @@ public class JavaBot {
         System.out.println("Summarized Title = " + summarizedTitle);
 
         // LLM을 사용해 이미지 생성
-        String image_url = useLLM2("일본 만화 풍의 개발 회사 내부 모습들을 그려줘")
+        String image_url = useLLM2("일본 만화 풍의 개발 회사 내부 모습들을 그려줘");
         System.out.println("image url = " + image_url);
 
         // GitHub Issue 생성
